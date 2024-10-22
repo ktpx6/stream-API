@@ -1,44 +1,36 @@
 package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/departments")
 public class DepartmentController {
-    private final DepartmentService departmentService;
+    private final EmployeeService employeeService;
 
     @Autowired
-    public DepartmentController(DepartmentService departmentService) {
-        this.departmentService = departmentService;
+    public DepartmentController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
     @GetMapping("/max-salary")
-    public Employee getEmployeeWithMaxSalary(@RequestParam int departmentId) {
-        return departmentService.findEmployeeWithMaxSalary(departmentId);
+    public Employee getEmployeeWithMaxSalary(@RequestParam int department) {
+        return employeeService.getEmployeeWithMaxSalary(department);
     }
 
     @GetMapping("/min-salary")
-    public Employee getEmployeeWithMinSalary(@RequestParam int departmentId) {
-        return departmentService.findEmployeeWithMinSalary(departmentId);
+    public Employee getEmployeeWithMinSalary(@RequestParam int department) {
+        return employeeService.getEmployeeWithMinSalary(department);
     }
 
     @GetMapping("/all")
-    public List<Employee> getAllEmployeesByDepartment(@RequestParam(required = false) Integer departmentId) {
-        if (departmentId != null) {
-            return departmentService.getEmployeesByDepartment(departmentId);
+    public Set<Employee> getEmployeesByDepartment(@RequestParam(required = false) Integer department) {
+        if (department != null) {
+            return employeeService.getEmployeesByDepartment(department);
         } else {
-            throw new IllegalArgumentException("Требуется номер отдела");
+            return employeeService.getAllEmployeesGroupedByDepartment();
         }
-    }
-
-    @GetMapping("/all-departments")
-    public Map<Integer, List<Employee>> getAllEmployeesGroupedByDepartment() {
-        return departmentService.getAllEmployeesGroupedByDepartment();
     }
 }
